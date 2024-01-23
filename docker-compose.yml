@@ -1,0 +1,12 @@
+version: '3'
+services:
+  dltc-env:
+    image: philosophiech/dltc-env:latest-${ARCH}
+    container_name: dltc-env
+    tty: true
+    stdin_open: true
+    hostname: dltc-env
+    volumes:
+      - "${DLTC_WORKHOUSE_DIRECTORY}:/home/copyeditor/dltc-workhouse"
+    working_dir: /home/copyeditor/dltc-workhouse
+    command: ["LaunchScript", "start"]
