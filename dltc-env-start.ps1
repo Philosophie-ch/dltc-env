@@ -39,7 +39,7 @@ if (Test-Path .\.env) {
     exit 1
 }
 
-$required_env_vars = "ARCH", "DLTC_WORKHOUSE_DIRECTORY", "DOCKERHUB_USERNAME", "DOCKERHUB_TOKEN"
+$required_env_vars = "ARCH", "DLTC_WORKHOUSE_DIRECTORY", "DOCKERHUB_TOKEN"
 
 # Check if required environment variables are set
 foreach ($var_name in $required_env_vars) {
@@ -55,6 +55,8 @@ if (-not (Test-Path $DLTC_WORKHOUSE_DIRECTORY)) {
     exit 1
 }
 
+$DOCKERHUB_USERNAME = "philosophiech"
+
 # MAIN
 
 # 1. Login to dockerhub
@@ -62,7 +64,7 @@ echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin > $
 Write-Host "Logged in to Docker Hub as $DOCKERHUB_USERNAME"
 
 # 2. Pull latest dltc-env image
-docker pull philosophiech/dltc-env:latest-$ARCH
+docker pull $DOCKERHUB_USERNAME/dltc-env:latest-$ARCH
 docker logout > $null 2>&1
 Write-Host "Pulled latest dltc-env image for $ARCH; logged out of Docker Hub"
 

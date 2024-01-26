@@ -29,7 +29,6 @@ cp .env.template .env
 - 2.1 `ARCH`: the architecture of your machine. If you are on a Mac with an Apple Silicon chip, set this to "arm64". Otherwise, set it to "amd64" (for Macs with Intel chips, Windows, and Linux)
 - 2.2 `DLTC_WORKHOUSE_DIRECTORY`: the full path, on your local machine, to the 'dltc-workhouse' shared folder inside Dropbox
 - 2.3 `DOCKERHUB_TOKEN`: the login token for the dockerhub account. You can find it in the "Institutional set-up" page in our Google Drive
-- 2.4 `DOCKERHUB_USERNAME`: the dockerhub username of the association. Leave it as "philosophiech"
 
 
 ## Usage

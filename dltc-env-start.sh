@@ -40,7 +40,7 @@ else
 fi
 set +a
 
-required_env_vars=( "ARCH" "DLTC_WORKHOUSE_DIRECTORY" "DOCKERHUB_USERNAME" "DOCKERHUB_TOKEN" )
+required_env_vars=( "ARCH" "DLTC_WORKHOUSE_DIRECTORY" "DOCKERHUB_TOKEN" )
 
 # Check if required environment variables are set
 for var_name in "${required_env_vars[@]}"; do
@@ -56,6 +56,7 @@ if [ ! -d "${DLTC_WORKHOUSE_DIRECTORY}" ]; then
     exit 1
 fi
 
+DOCKERHUB_USERNAME=philosophiech
 
 ############
 # MAIN
@@ -67,7 +68,7 @@ printf "Logged in to Docker Hub as ${DOCKERHUB_USERNAME}\n\n"
 
 
 # 2. Pull latest dltc-env image
-docker pull philosophiech/dltc-env:latest-${ARCH} && docker logout > /dev/null 2>&1
+docker pull ${DOCKERHUB_USERNAME}/dltc-env:latest-${ARCH} && docker logout > /dev/null 2>&1
 printf "\nSuccessfully pulled latest dltc-env image for ${ARCH}; now logged out of Docker Hub\n"
 
 
