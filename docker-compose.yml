@@ -2,6 +2,9 @@ version: '3'
 services:
   dltc-env:
     image: philosophiech/dltc-env:latest-${ARCH}
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     container_name: dltc-env
     tty: true
     stdin_open: true
