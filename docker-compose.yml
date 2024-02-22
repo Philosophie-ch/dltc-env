@@ -2,6 +2,7 @@ version: '3'
 services:
   dltc-env:
     image: philosophiech/dltc-env:latest-${ARCH}
+    user: "1000:1000"
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -13,7 +14,6 @@ services:
       - "${DLTC_WORKHOUSE_DIRECTORY}:/home/copyeditor/dltc-workhouse"
       - "${HOME}/.ssh:/home/copyeditor/.ssh"
       - "${HOME}/.gitconfig:/home/copyeditor/.gitconfig"
-      - "${HOME}/.config/git:/home/copyeditor/.config/git"
-
+      - "${HOME}/.config:/home/copyeditor/.config"
     working_dir: /home/copyeditor/dltc-workhouse
     command: ["LaunchScript", "start"]
