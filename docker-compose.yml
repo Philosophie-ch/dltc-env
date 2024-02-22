@@ -11,5 +11,9 @@ services:
     hostname: dltc-env
     volumes:
       - "${DLTC_WORKHOUSE_DIRECTORY}:/home/copyeditor/dltc-workhouse"
+      - "${HOME}/.ssh:/home/copyeditor/.ssh"
+      - "${HOME}/.gitconfig:/home/copyeditor/.gitconfig"
+      - "${HOME}/.config/git:/home/copyeditor/.config/git"
+
     working_dir: /home/copyeditor/dltc-workhouse
     command: ["LaunchScript", "start"]
