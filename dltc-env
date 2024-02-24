@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+target_dir="${HOME}/.dltc-env"
+mkdir -p "${target_dir}"
+
+# Generate .env file
+
+ARCH_UNAME=$( uname -m )
+
+if [ "${ARCH_UNAME}" == "x86_64" ]; then
+    _ARCH="amd64"
+elif [ "${ARCH_UNAME}" == "aarch64" ]; then
+    _ARCH="arm64"
+else
+    echo "Unsupported architecture: ${ARCH_UNAME}"
+    exit 1
+fi
+
+_HASH_PATH=$( find "${HOME}" -name "philosophie_19a0b9d5e59d915021f676c9c2cc85d4204c14fc57e094bb8ba991c30116bde420240224013009" )
+_HASH_DIR=$( dirname "${_HASH_PATH}" )
+
+_DLTC_WORKHOUSE_DIRECTORY=$( dirname "${_HASH_DIR}" )
+_DOCKERHUB_USERNAME="philosophiech"
+_DOCKERHUB_TOKEN=$( cat "${_HASH_DIR}/dh" )
+
+echo "ARCH=${_ARCH}" > "${target_dir}/.env"
+echo "DLTC_WORKHOUSE_DIRECTORY=${_DLTC_WORKHOUSE_DIRECTORY}" >> "${target_dir}/.env"
+echo "DOCKERHUB_USERNAME=${_DOCKERHUB_USERNAME}" >> "${target_dir}/.env"
+echo "DOCKERHUB_TOKEN=${_DOCKERHUB_TOKEN}" >> "${target_dir}/.env"
