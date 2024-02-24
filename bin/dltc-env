@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+_version="0.1.0"
+
+function usage() {
+    cat << EOF
+Usage: dltc-env [COMMAND]
+
+Commands:
+    start       Start the dltc-env environment
+    stop        Stop the dltc-env environment
+    update      Update the dltc-env script to the latest version
+
+    -h, --help, help        Show this help message
+    -v, --version, version  Show the version of the dltc-env script
+
+EOF
+
+
 function check_dependencies() {
 
     error_messages=
@@ -163,6 +180,14 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 
     case "${1}" in
+
+        "-h" | "--help" | "help")
+            ;;
+        
+        "-v" | "--version" | "version")
+            echo "${_version}"
+            exit 0
+            ;;
 
         "start")
             dltc-env-start            
