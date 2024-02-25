@@ -42,7 +42,7 @@ function check_dependencies() {
 # Generate .env file
 function gen_env_file() {
 
-    echo "Generating .env file. Please wait, this might take a couple minutes..." | tee -a "${ex_log_file}"
+    printf "\n\nGenerating .env file. Please wait, this might take a couple minutes..." | tee -a "${ex_log_file}"
 
     # Match with the shared's folder information
     local hash_file="philosophie_19a0b9d5e59d915021f676c9c2cc85d4204c14fc57e094bb8ba991c30116bde420240224013009" 
@@ -65,7 +65,7 @@ function gen_env_file() {
     echo "Architecture: '${arch}'"
 
     # 2. dltc-workhouse directory
-    echo "Looking for the 'dltc-workhouse' folder..."
+    echo "Looking for the 'dltc-workhouse' folder. This might take some minutes, please wait..."
     local hash_path=$( find "${HOME}" -name "${hash_file}" )
     local hash_dir=$( dirname "${hash_path}" )
 
