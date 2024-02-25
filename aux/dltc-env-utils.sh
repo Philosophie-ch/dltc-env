@@ -222,11 +222,11 @@ function update_image() {
 
     if [ -x "$(command -v docker-compose)" ]; then
         docker-compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1 && \
-        docker-compose -f "${compose_file}" up -d >> "${ex_log_file}" 2>&1
+        docker-compose -f "${compose_file}" up -d --force-recreate >> "${ex_log_file}" 2>&1
         local compose_status=$?
     else
         docker compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1 && \
-        docker compose -f "${compose_file}" up -d >> "${ex_log_file}" 2>&1
+        docker compose -f "${compose_file}" up --force-recreate -d >> "${ex_log_file}" 2>&1
         local compose_status=$?
     fi
     echo "" >> "${ex_log_file}"
