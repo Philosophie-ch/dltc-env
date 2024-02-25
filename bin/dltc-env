@@ -82,7 +82,7 @@ case "${1}" in
         ;;
 
     *)
-        printf "Unknown command ${1}"
+        printf "Unknown command ${1}. Showing help:\n\n"
         usage
         exit 1
         ;;
