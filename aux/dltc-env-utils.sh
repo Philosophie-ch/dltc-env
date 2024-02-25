@@ -7,7 +7,7 @@ aux_dir="${root_dir}/aux"
 docker_dir="${root_dir}/docker"
 logs_dir="${root_dir}/logs"
 
-local ex_log_file="${1}"
+ex_log_file="${1}"
 
 if [ -z "${ex_log_file}" ]; then
     echo "utils: No log file passed as argument. Exiting."

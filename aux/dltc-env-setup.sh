@@ -3,12 +3,12 @@
 _target_dir="${HOME}/.dltc-env"
 
 _root_dir="${HOME}/.dltc-env.new"
-_bin_dir="${root_dir}/bin"
-_aux_dir="${root_dir}/aux"
-_docker_dir="${root_dir}/docker"
+_bin_dir="${_root_dir}/bin"
+_aux_dir="${_root_dir}/aux"
+_docker_dir="${_root_dir}/docker"
 
-_logs_dir="${root_dir}/logs"
-_log_file="${logs_dir}/dltc-env-setup.log"
+_logs_dir="${_root_dir}/logs"
+_log_file="${_logs_dir}/dltc-env-setup.log"
 
 
 download_file() {
@@ -16,9 +16,9 @@ download_file() {
     local output_path=$2
 
     if command -v wget > /dev/null 2>&1; then
-        wget "$url" -O "$output_path" > /dev/null 2>&1
+        wget "$url" -O "$output_path" >> "${_log_file}" 2>&1
     elif command -v curl > /dev/null 2>&1; then
-        curl "$url" > "$output_path" > /dev/null 2>&1
+        curl "$url" > "$output_path" >> "${_log_file}" 2>&1
     else
         echo "Neither wget nor curl found. Please install one of those and try again. Aborting."
         exit 1
@@ -38,7 +38,7 @@ rm -rf "${_root_dir}"
 mkdir -p "${_bin_dir}" && \
 mkdir -p "${_aux_dir}" && \
 mkdir -p "${_docker_dir}" && \
-mkdir -p "${_logs_dir}"
+mkdir -p "${_logs_dir}" 
 mkdir_status=$?
 
 if [ "${mkdir_status}" -ne 0 ]; then
@@ -52,7 +52,7 @@ _base_url="https://raw.githubusercontent.com/Philosophie-ch/dltc-env"
 _branch="simplify-use"  # change to 'master' for the latest version, when ready
 _url="${_base_url}/${_branch}"
 
-_files=( "bin/dltc-env" "aux/dltc-env-setup.sh" "aux/dltc-env-start.sh" "aux/dltc-env-utils.sh" "docker/docker-compose.yml" "README.md" )
+_files=( "bin/dltc-env" "aux/dltc-env-setup.sh" "aux/dltc-env-utils.sh" "docker/docker-compose.yml" "README.md" )
 
 for file in "${_files[@]}"; do
     download_file "${_url}/${file}" "${_root_dir}/${file}"
@@ -66,7 +66,7 @@ for file in "${_files[@]}"; do
 
 done
 
-_executables=( "bin/dltc-env" "aux/dltc-env-setup.sh" "aux/dltc-env-start.sh" "aux/dltc-env-utils.sh" )
+_executables=( "bin/dltc-env" "aux/dltc-env-setup.sh" "aux/dltc-env-utils.sh" )
 
 for executable in "${_executables[@]}"; do
     chmod +x "${_root_dir}/${executable}"
