@@ -102,7 +102,7 @@ done
 # Execute the setup script to finalize bootstrapping
 printf "\nExecuting 'dltc-env setup'...\n" | tee -a "${log_file}"
 
-"${root_dir}/bin/dltc-env" setup
+"${root_dir}/aux/dltc-env-setup.sh"
 setup_status=$?
 
 if [ "${setup_status}" -ne 0 ]; then
