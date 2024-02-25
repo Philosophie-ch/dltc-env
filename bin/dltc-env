@@ -1,171 +1,19 @@
 #!/usr/bin/env bash
 
-_version="0.1.0"
 
 function usage() {
     cat << EOF
-Usage: dltc-env [COMMAND]
+Usage: dltc-env [argument]
 
-Commands:
-    start       Start the dltc-env environment
-    stop        Stop the dltc-env environment
-    update      Update the dltc-env script to the latest version
+Arguments:
+    start                   Start the dltc-env environment
+    stop                    Stop the dltc-env environment
+    setup, update           Update the dltc-env command and the environment
 
     -h, --help, help        Show this help message
-    -v, --version, version  Show the version of the dltc-env script
+    -v, --version, version  Show the version of the dltc-env command
 
 EOF
-
-
-function check_dependencies() {
-
-    error_messages=
-
-    cmd_arr=( "docker" )
-    for cmd in "${cmd_arr[@]}"; do
-        if ! command -v "${cmd}" &> /dev/null; then
-            error_messages+="Missing dependency: ${cmd} is not installed or not in the PATH. Exiting.\n"
-        fi
-    done
-
-    if ! docker compose version &> /dev/null; then
-        error_messages+="Missing dependency: docker-compose is not installed or not in the PATH. Exiting.\n"
-    fi
-
-    if [ ! -z "${error_messages}" ]; then
-        error_messages+="\n${_name}: Aborting. Please install the missing dependencies and try again.\n\n"    
-        printf "${error_messages}"
-        exit 1
-    fi
-
-}
-
-function load_env_file() {
-    set -a
-    if [ -f ".env" ]; then
-        . .env
-    else
-        printf "No .env file found.\nPlease copy the .env.template file with the name ".env" and fill in the required variables.\n" | tee -a "${log_file}"
-        exit 1
-    fi
-    set +a
-}
-
-function check_env_file() {
-    
-    load_env_file
-    fail_flag=0
-
-    required_env_vars=( "ARCH" "DLTC_WORKHOUSE_DIRECTORY" "DOCKERHUB_USER" "DOCKERHUB_TOKEN" )
-
-    # Check if required environment variables are set
-    for var_name in "${required_env_vars[@]}"; do
-        if [ -z "${!var_name}" ]; then
-            no_env_var_msg "${var_name}" | tee -a "${log_file}"
-            exit 1
-        fi
-    done
-
-    # Check if ARCH is set to "arm64" or "amd64"
-    if [ "${ARCH}" != "arm64" ] && [ "${ARCH}" != "amd64" ]; then
-        cat << EOF | tee -a "${log_file}"
-    Error: ARCH must be set to "arm64" or "amd64".
-    Please set it to the correct value for your machine in the .env file:
-
-    For Windows, Linux, and Mac (Intel) machines, set ARCH=amd64
-    For Mac (Apple Silicon: M1, M2, M3) machines, set ARCH=arm64
-
-EOF
-        exit 1
-    fi
-
-    # Check if DLTC_WORKHOUSE_DIRECTORY exists
-    if [ ! -d "${DLTC_WORKHOUSE_DIRECTORY}" ]; then
-        printf 'Error: the folder '${DLTC_WORKHOUSE_DIRECTORY}' set for DLTC_WORKHOUSE_DIRECTORY does not exist.\nPlease put the path to the shared dltc-workhouse folder in Dropbox.\n' | tee -a "${log_file}"
-        exit 1
-    fi
-
-    printf "All dependencies found, and environment variables are all correctly set.\n\n" >> "${log_file}"
-
-
-}
-
-
-
-# Generate .env file
-function gen_env_file() {
-
-    ARCH_UNAME=$( uname -m )
-
-    if [ "${ARCH_UNAME}" == "x86_64" ]; then
-        _ARCH="amd64"
-    elif [ "${ARCH_UNAME}" == "aarch64" ]; then
-        _ARCH="arm64"
-    else
-        echo "Unsupported architecture: ${ARCH_UNAME}"
-        exit 1
-    fi
-
-    _HASH_PATH=$( find "${HOME}" -name "philosophie_19a0b9d5e59d915021f676c9c2cc85d4204c14fc57e094bb8ba991c30116bde420240224013009" )
-    _HASH_DIR=$( dirname "${_HASH_PATH}" )
-
-    _DLTC_WORKHOUSE_DIRECTORY=$( dirname "${_HASH_DIR}" )
-    _DOCKERHUB_USERNAME="philosophiech"
-    _DOCKERHUB_TOKEN=$( cat "${_HASH_DIR}/dh" )
-
-    echo "ARCH=${_ARCH}" > "${target_dir}/.env"
-    echo "DLTC_WORKHOUSE_DIRECTORY=${_DLTC_WORKHOUSE_DIRECTORY}" >> "${target_dir}/.env"
-    echo "DOCKERHUB_USERNAME=${_DOCKERHUB_USERNAME}" >> "${target_dir}/.env"
-    echo "DOCKERHUB_TOKEN=${_DOCKERHUB_TOKEN}" >> "${target_dir}/.env"
-
-}
-
-
-# Get docker-compose.yml file
-function get_docker_compose_file() {
-
-    project_url="https://raw.githubusercontent.com/Philosophie-ch/dltc-env/master"
-    compose_file_url="${project_url}/docker-compose.yml"
-
-    if command -v wget &> /dev/null; then
-        wget "${compose_file_url}" -O "${target_dir}/docker-compose.yml"
-
-    elif command -v curl &> /dev/null; then
-        curl "${compose_file_url}" > "${target_dir}/docker-compose.yml"
-
-    else
-        echo "Neither wget nor curl found. Exiting."
-        exit 1
-    fi
-
-}
-
-function auto_update() {
-
-    script_url="https://raw.githubusercontent.com/Philosophie-ch/dltc-env/master/dltc-env"
-
-    if command -v wget > /dev/null 2>&1; then
-        wget "${script_url}" -O "${bin_dir}/dltc-env"
-
-    elif command -v curl > /dev/null 2>&1; then
-        curl "${script_url}" > "${bin_dir}/dltc-env"
-
-    else
-        echo "Neither wget nor curl found. Please install one of those and try again. Aborting."
-        exit 1
-    fi
-
-    chmod +x "${bin_dir}/dltc-env"
-
-    PATH="${bin_dir}:${PATH}"
-
-    if [ -n "${BASH_VERSION}" ]; then
-        echo "export PATH=\"${bin_dir}:\$PATH\"" >> "${HOME}/.bashrc"
-    elif [ -n "${ZSH_VERSION}" ]; then
-        echo "export PATH=\"${bin_dir}:\$PATH\"" >> "${HOME}/.zshrc"
-    fi
-
-}
 
 
 ############
@@ -173,36 +21,63 @@ function auto_update() {
 ############
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    target_dir="${HOME}/.dltc-env"
-    bin_dir="${target_dir}/bin"
-    mkdir -p "${bin_dir}"
-    log_file="${target_dir}/logs/dltc-env.log"
+
+    # Bare setup: log file in case the rest fails
+    _root_dir="${HOME}/.dltc-env"
+    _logs_dir="${_root_dir}/logs"
+    mkdir -p "${logs_dir}"    
+    log_file="${logs_dir}/dltc-env.log"
+    echo "DLTC-ENV LOG" > "${log_file}"
+
+    # All sourceable variables and functions are in one place
+    set -a
+    . "${HOME}/.dltc-env/aux/dltc-env-utils.sh" "${log_file}"
+    set +a
 
 
     case "${1}" in
 
         "-h" | "--help" | "help")
+            usage
+            exit 0
             ;;
         
         "-v" | "--version" | "version")
-            echo "${_version}"
+            echo "${version}"
             exit 0
             ;;
 
+        "setup" | "update")
+            "${aux_dir}/dltc-env-setup.sh"
+            ;;
+
         "start")
-            dltc-env-start            
+
+            if [ ! -f "${root_dir}/.dltc_setup_flag" ]
+            then
+                printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
+                exit 1
+            fi
+
+            start_dltc_env_container 
+
             ;;
 
         "stop")
-            dltc-env-stop
-            ;;
 
-        "update")
-            dltc-env-update
+            if [ ! -f "${root_dir}/.dltc_setup_flag" ]
+            then
+                printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
+                exit 1
+            fi
+
+            stop_dltc_env_container
+            
             ;;
 
         *)
-            echo "Unknown command: ${1}"
+            printf "Unknown command ${1}"
+            usage
             exit 1
             ;;
     esac
