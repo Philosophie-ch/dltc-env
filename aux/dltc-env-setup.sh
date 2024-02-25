@@ -42,7 +42,7 @@ mkdir -p "${_logs_dir}"
 mkdir_status=$?
 
 if [ "${mkdir_status}" -ne 0 ]; then
-    echo "Failed to create the project's folder . Aborting." | tee -a "${_log_file}"
+    echo "Failed to create the project's folder. Aborting." | tee -a "${_log_file}"
     exit 1
 fi
 
