@@ -34,7 +34,7 @@ echo "DLTC-ENV LOG" > "${log_file}"
 
 # Rerun setup if utils are missing
 if [ ! -f "${_root_dir}/aux/dltc-env-utils.sh" ]; then
-    echo "The dltc-env-utils.sh file is missing. Running setup again..." | tee -a "${log_file}"
+    echo "The dltc-env-utils.sh file is missing. Starting setup..." | tee -a "${log_file}"
     "${_root_dir}/aux/dltc-env-setup.sh"
 fi
 
