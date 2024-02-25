@@ -94,7 +94,7 @@ set +a
 
 gen_env_file
 
-setup_path
+set_path
 
 check_dependencies
 
