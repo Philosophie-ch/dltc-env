@@ -2,6 +2,8 @@
 
 
 # Setup folder with bootstrap scripts
+# The project is not meant to change  the existence of bin aux, logs folders, and dltc-env and dltc-env-setup.sh files
+# The rest can change and dltc-eng-setup.sh can handle for users without the need to install again
 
 root_dir="${HOME}/.dltc-env"
 bin_dir="${root_dir}/bin"
@@ -22,7 +24,7 @@ if [ -d "${root_dir}" ]; then
 
 fi
 
-echo "Creating the directory: ${root_dir}..."
+printf "\nCreating the directory: ${root_dir}...\n"
 mkdir -p "${bin_dir}" && \
 mkdir -p "${aux_dir}" && \
 mkdir -p "${logs_dir}"
@@ -32,7 +34,7 @@ if [ "${mkdir_status}" -ne 0 ]; then
     echo "Failed to create the directory: ${bin_dir}. Aborting."
     exit 1
 fi
-echo "Directory created."
+printf "Directory created.\n"
 
 
 
@@ -42,7 +44,7 @@ base_url="https://raw.githubusercontent.com/Philosophie-ch/dltc-env"
 branch="simplify-use"  # change to 'master' for the latest version, when ready
 url="${base_url}/${branch}"
 
-echo "Setting up the dltc-env command..."
+printf "\nSetting up the dltc-env command...\n"
 if command -v wget > /dev/null 2>&1; then
     wget "${url}/bin/dltc-env" -O "${root_dir}/bin/dltc-env" > /dev/null 2>&1 && \
     wget "${url}/aux/dltc-env-setup.sh" -O "${root_dir}/aux/dltc-env-setup.sh" > /dev/null 2>&1
@@ -62,7 +64,7 @@ if [ "${download_status}" -ne 0 ]; then
     echo "Failed to download the script. Aborting."
     exit 1
 fi
-echo "...script downloaded..."
+printf "...script downloaded...\n"
 
 
 # Make the scripts executable and add the bin directory to the PATH
@@ -90,7 +92,7 @@ for file in "${files[@]}"; do
             echo "Appended '${line_to_add}' to ${file}."
 
         else
-            echo "The line ${line_to_add} is already present in ${file}. Everything is correct, no modification needed."
+            printf "\nThe line ${line_to_add} is already present in ${file}. Everything is correct, no modification needed.\n"
 
         fi
     fi
@@ -98,10 +100,9 @@ done
 
 
 # Execute the setup script to finalize bootstrapping
+printf "\nExecuting 'dltc-env setup'...\n" | tee -a "${log_file}"
 
-echo "Executing 'dltc-env setup'..." | tee -a "${log_file}"
-
-"${root_dir}/bin/dltc-env" setup >> "${log_file}" 2>&1
+"${root_dir}/bin/dltc-env" setup
 setup_status=$?
 
 if [ "${setup_status}" -ne 0 ]; then
@@ -109,10 +110,11 @@ if [ "${setup_status}" -ne 0 ]; then
     exit 1
 fi
 
-echo "dltc-env setup executed successfully." | tee -a "${log_file}"
+printf "dltc-env setup executed successfully.\n" | tee -a "${log_file}"
 
 
 cat << EOF
+
 dltc-env command successfully installed. Please open a new terminal and do
 
 dltc-env help
