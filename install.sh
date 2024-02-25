@@ -62,7 +62,7 @@ if [ "${download_status}" -ne 0 ]; then
     echo "Failed to download the script. Aborting."
     exit 1
 fi
-echo "...scrip downloaded..."
+echo "...script downloaded..."
 
 
 # Make the scripts executable and add the bin directory to the PATH
