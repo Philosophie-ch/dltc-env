@@ -202,6 +202,7 @@ function update_image() {
     fi
 
     # 3. Assert it's actually there
+    printf "3. Assert the dltc-env image is actually there\n\n" >> "${ex_log_file}"
     docker inspect --type=image "${DOCKER_IMAGE_NAME_TAG}" > /dev/null 2>&1
     local inspect_status=$?
 
@@ -212,6 +213,7 @@ function update_image() {
     printf "${DOCKER_IMAGE_NAME_TAG} image found locally.\n\n" >> "${ex_log_file}"
 
     # 4. Log out from Docker Hub
+    printf "4. Log out from Docker Hub\n\n" >> "${ex_log_file}"
     docker logout >> "${ex_log_file}" 2>&1
     echo "" >> "${ex_log_file}"
 
@@ -219,15 +221,30 @@ function update_image() {
     # 5. Repristine container
     printf "5. Repristine containers\n\n" >> "${ex_log_file}"
     local compose_file="${docker_dir}/docker-compose.yml"
+    local container_name="dltc-env"
 
     if [ -x "$(command -v docker-compose)" ]; then
-        docker-compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1 && \
+        docker-compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1
+
+        # Force remove the container if it still exists
+        if [ "$(docker ps -a -q -f name=${container_name})" ]; then
+            docker rm -f "${container_name}" >> "${ex_log_file}" 2>&1
+        fi
+
         docker-compose -f "${compose_file}" up -d --force-recreate >> "${ex_log_file}" 2>&1
         local compose_status=$?
+
     else
-        docker compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1 && \
+        docker compose -f "${compose_file}" down >> "${ex_log_file}" 2>&1
+
+        # Force remove the container if it still exists
+        if [ "$(docker ps -a -q -f name=${container_name})" ]; then
+            docker rm -f "${container_name}" >> "${ex_log_file}" 2>&1
+        fi
+    
         docker compose -f "${compose_file}" up --force-recreate -d >> "${ex_log_file}" 2>&1
         local compose_status=$?
+
     fi
     echo "" >> "${ex_log_file}"
 
