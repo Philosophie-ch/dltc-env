@@ -334,9 +334,6 @@ function set_path() {
 
                 echo "Appended '${line_to_add}' to ${file}."
 
-            else
-                echo "The line ${line_to_add} is already present in ${file}. Everything is correct, no modification needed."
-
             fi
         fi
     done
