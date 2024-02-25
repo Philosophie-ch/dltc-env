@@ -2,6 +2,19 @@
 
 This repository contains utils to spin up a docker container with all of the tools needed to compile Dialectica articles.
 
+## Installation
+
+Two methods are provided. If one does not work (`curl` or `wget` are not installed or not available), try the other.
+
+With `curl`:
+```bash
+curl -sSL https://raw.githubusercontent.com/Philosophie-ch/dltc-env/simplify-use/install.sh | bash
+```
+
+With `wget`:
+```bash
+wget -O - https://raw.githubusercontent.com/Philosophie-ch/dltc-env/simplify-use/install.sh | bash
+```
 
 ## Setup
 

@@ -20,67 +20,61 @@ EOF
 # MAIN
 ############
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
-    # Bare setup: log file in case the rest fails
-    _root_dir="${HOME}/.dltc-env"
-    _logs_dir="${_root_dir}/logs"
-    mkdir -p "${logs_dir}"    
-    log_file="${logs_dir}/dltc-env.log"
-    echo "DLTC-ENV LOG" > "${log_file}"
+# Bare setup: log file in case the rest fails
+_root_dir="${HOME}/.dltc-env"
+_logs_dir="${_root_dir}/logs"
+mkdir -p "${logs_dir}"    
+log_file="${logs_dir}/dltc-env.log"
+echo "DLTC-ENV LOG" > "${log_file}"
 
-    # All sourceable variables and functions are in one place
-    set -a
-    . "${HOME}/.dltc-env/aux/dltc-env-utils.sh" "${log_file}"
-    set +a
+# All sourceable variables and functions are in one place
+set -a
+. "${HOME}/.dltc-env/aux/dltc-env-utils.sh" "${log_file}"
+set +a
 
 
-    case "${1}" in
+case "${1}" in
 
-        "-h" | "--help" | "help")
-            usage
-            exit 0
-            ;;
-        
-        "-v" | "--version" | "version")
-            echo "${version}"
-            exit 0
-            ;;
+    "-h" | "--help" | "help")
+        usage
+        exit 0
+        ;;
+    
+    "-v" | "--version" | "version")
+        echo "${version}"
+        exit 0
+        ;;
 
-        "setup" | "update")
-            "${aux_dir}/dltc-env-setup.sh"
-            ;;
+    "setup" | "update")
+        "${aux_dir}/dltc-env-setup.sh"
+        ;;
 
-        "start")
+    "start")
 
-            if [ ! -f "${root_dir}/.dltc_setup_flag" ]
-            then
-                printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
-                exit 1
-            fi
-
-            start_dltc_env_container 
-
-            ;;
-
-        "stop")
-
-            if [ ! -f "${root_dir}/.dltc_setup_flag" ]
-            then
-                printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
-                exit 1
-            fi
-
-            stop_dltc_env_container
-            
-            ;;
-
-        *)
-            printf "Unknown command ${1}"
-            usage
+        if [ ! -f "${root_dir}/.dltc_setup_flag" ]; then
+            printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
             exit 1
-            ;;
-    esac
+        fi
 
+        start_dltc_env_container 
 
-fi
+        ;;
+
+    "stop")
+
+        if [ ! -f "${root_dir}/.dltc_setup_flag" ]; then
+            printf "The dltc-env command has not been set up. Please run 'dltc-env setup' first.\n"
+            exit 1
+        fi
+
+        stop_dltc_env_container
+        
+        ;;
+
+    *)
+        printf "Unknown command ${1}"
+        usage
+        exit 1
+        ;;
+esac
