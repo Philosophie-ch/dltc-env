@@ -1,4 +1,3 @@
-version: '3'
 services:
   dltc-env:
     image: philosophiech/dltc-env:latest-${ARCH}
